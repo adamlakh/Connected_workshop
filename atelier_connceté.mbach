@@ -1,31 +1,89 @@
+eset States = {on, off}.
+    
 scene workshopScene = {
 
-    size = (1671,941).
-    layers = { top }.
+   size = (1671,941).
+   
+   layers = { top }.
 
-    background = loadImage(Images/workshop.png).
-    tool_img= loadImage(Images/tool1.png).
+   background = loadImage(Images/workshop.png).
+   tool_img= loadImage(Images/tool1.png).
+   temp_sensor_img = loadImage(Images/tempSensor.png).
+   buzzer_on_img = loadImage(Images/buzzerOn.png).
+   buzzer_off_img = loadImage(Images/buzzerOff.png).
+   flame_img= loadImage(Images/flame.png).
 
-    widget tool ={
-        display = {tool_img }
-       init = { wdL = top. }
-    }
+   widget tool_wdg ={
+      display = {tool_img }
+      init = { wdL = top. }
+   }
 
+   widget buzzer_wdg ={
+      
+      attributes = {buzzer_state in States.}
+    
+      display = {
+         buzzer_state = on -> buzzer_on_img.
+         buzzer_state = off -> buzzer_off_img.
+      }
 
+      init = {
+         wdL = top.
+         buzzer_state = off.
+      }
+   }
 
+   widget temp_sensor_wdg ={
+      display = {temp_sensor_img}
+      init = {wdL = top.}
+   }
+   
+   widget flame_wdg ={
+      display ={flame_img}
+      init = {wdL=top.}
+   }
 }.
 
 proc Init = draw_scene(workshopScene);
-            place_at(tool,workshopScene,126,287);
-            Init_tool.
+            Init_tool;
+            Init_sensor;
+            Init_actuator;
+            Init_event.
+
+    Init_sensor= place_at(temp_sensor_wdg,workshopScene,700,0);
+                 show(temp_sensor_wdg,workshopScene).
+
+    Init_actuator= place_at(buzzer_wdg,workshopScene,900, 0);
+                   show(buzzer_wdg,workshopScene).
 
     Init_tool = tell(tool);
-                show(tool,workshopScene).
+                place_at(tool_wdg,workshopScene,126,210);
+                show(tool_wdg,workshopScene).
+               
+    Init_event = place_at(flame_wdg,workshopScene,600,200).
 	
     Take_tool= ask(tool);
                get(tool);
-               hide(tool,workshopScene).
+               hide(tool_wdg,workshopScene).
 
     Return_tool= nask(tool);
                  tell(tool);
-                 show(tool,workshopScene).
+                 show(tool_wdg,workshopScene).
+
+    Launch_fire= nask(fire);
+                 tell(fire);
+                 show(flame_wdg,workshopScene).
+
+     Stop_fire=  ask(fire);
+                 get(fire);
+                 hide(flame_wdg,workshopScene).
+
+     Check_temperature= ((ask(fire);att(buzzer_state,buzzer_wdg,workshopScene,on);)
+                        +
+                        (nask(fire);att(buzzer_state,buzzer_wdg,workshopScene,off)));
+                        Check_temperature.
+      
+
+
+
+    

@@ -1,0 +1,31 @@
+scene workshopScene = {
+
+    size = (1671,941).
+    layers = { top }.
+
+    background = loadImage(Images/workshop.png).
+    tool_img= loadImage(Images/tool1.png).
+
+    widget tool ={
+        display = {tool_img }
+       init = { wdL = top. }
+    }
+
+
+
+}.
+
+proc Init = draw_scene(workshopScene);
+            place_at(tool,workshopScene,126,287);
+            Init_tool.
+
+    Init_tool = tell(tool);
+                show(tool,workshopScene).
+	
+    Take_tool= ask(tool);
+               get(tool);
+               hide(tool,workshopScene).
+
+    Return_tool= nask(tool);
+                 tell(tool);
+                 show(tool,workshopScene).

@@ -1,5 +1,6 @@
 eset States = {on, off}.
-    
+     Bolts= {bolt1,bolt2,bolt3}.
+
 scene workshopScene = {
 
    size = (1671,941).
@@ -12,6 +13,8 @@ scene workshopScene = {
    buzzer_on_img = loadImage(Images/buzzerOn.png).
    buzzer_off_img = loadImage(Images/buzzerOff.png).
    flame_img= loadImage(Images/flame.png).
+   weighting_scale_img = loadImage(Images/weighting_scale.png).
+   bolt_img = loadImage(Images/bolt.png).
 
    widget tool_wdg ={
       display = {tool_img }
@@ -42,16 +45,39 @@ scene workshopScene = {
       display ={flame_img}
       init = {wdL=top.}
    }
+
+   widget weighting_scale = {
+      display = {weighting_scale_img}
+      init = {wdL = top.}
+   }
+   
+   widget bolt_wdg1 = {
+      display = {bolt_img}
+      init = {wdL = top.}
+   }
+   
+   widget bolt_wdg2 = {
+      display = {bolt_img}
+      init = {wdL = top.}
+   }
+   
+   widget bolt_wdg3 = {
+      display = {bolt_img}
+      init = {wdL = top.}
+   }
 }.
 
 proc Init = draw_scene(workshopScene);
             Init_tool;
-            Init_sensor;
+            Init_sensors;
             Init_actuator;
             Init_event.
 
-    Init_sensor= place_at(temp_sensor_wdg,workshopScene,700,0);
-                 show(temp_sensor_wdg,workshopScene).
+    Init_sensors= place_at(temp_sensor_wdg,workshopScene,700,0);
+                 show(temp_sensor_wdg,workshopScene);
+                 place_at(weighting_scale, workshopScene, 650,500);
+                 show(weighting_scale, workshopScene).
+
 
     Init_actuator= place_at(buzzer_wdg,workshopScene,900, 0);
                    show(buzzer_wdg,workshopScene).
@@ -78,11 +104,31 @@ proc Init = draw_scene(workshopScene);
                  get(fire);
                  hide(flame_wdg,workshopScene).
 
-     Check_temperature= ((ask(fire);att(buzzer_state,buzzer_wdg,workshopScene,on);)
+     Check_temperature= ((ask(fire);att(buzzer_state,buzzer_wdg,workshopScene,on))
                         +
                         (nask(fire);att(buzzer_state,buzzer_wdg,workshopScene,off)));
                         Check_temperature.
       
+
+     Take_specific_bolt(id: Bolts) = get(id);
+                                    (((id = bolt1) -> hide(bolt_wdg1, workshopScene))
+                                    +
+                                    ((id = bolt2) -> hide(bolt_wdg2, workshopScene))
+                                    +
+                                    ((id = bolt3) -> hide(bolt_wdg2, workshopScene))).
+
+      Add_specific_bolt(id: Bolts) = tell(id);
+                                     (((id = bolt1) -> place_at(bolt_wdg1, workshopScene, 615,230); show(bolt_wdg1, workshopScene))
+                                    +
+                                     ((id = bolt2) -> place_at(bolt_wdg2, workshopScene, 635,250); show(bolt_wdg2, workshopScene))
+                                    +
+                                     ((id = bolt3) -> place_at(bolt_wdg3, workshopScene, 655,270); show(bolt_wdg3, workshopScene))).
+
+      Take_bolt = (ask(bolt1); Take_specific_bolt(bolt1); Take_bolt + ask(bolt2); Take_specific_bolt(bolt2); Take_bolt + ask(bolt3); Take_specific_bolt(bolt3); Take_bolt + Take_bolt).
+      
+      Add_bolt = (nask(bolt1); Add_specific_bolt(bolt1); Add_bolt + nask(bolt2); Add_specific_bolt(bolt2); Add_bolt + nask(bolt3); Add_specific_bolt(bolt3); Add_bolt + Add_bolt).
+
+                                       
 
 
 

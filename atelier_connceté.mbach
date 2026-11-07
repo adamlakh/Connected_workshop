@@ -1,5 +1,6 @@
 eset States = {on, off}.
-     Bolts= {bolt1,bolt2,bolt3}.
+    Bolts= {bolt1,bolt2,bolt3}.
+    Tools = {tool1, tool2, tool3}.
 
 scene workshopScene = {
 
@@ -8,7 +9,9 @@ scene workshopScene = {
    layers = { top }.
 
    background = loadImage(Images/workshop.png).
-   tool_img= loadImage(Images/tool1.png).
+   tool1_img= loadImage(Images/tool1.png).
+   tool2_img = loadImage(Images/tool2.png).
+   tool3_img = loadImage(Images/tool3.png).
    temp_sensor_img = loadImage(Images/tempSensor.png).
    buzzer_on_img = loadImage(Images/buzzerOn.png).
    buzzer_off_img = loadImage(Images/buzzerOff.png).
@@ -16,8 +19,18 @@ scene workshopScene = {
    weighting_scale_img = loadImage(Images/weighting_scale.png).
    bolt_img = loadImage(Images/bolt.png).
 
-   widget tool_wdg ={
-      display = {tool_img }
+   widget tool1_wdg ={
+      display = {tool1_img }
+      init = { wdL = top. }
+   }
+
+   widget tool2_wdg ={
+      display = {tool2_img }
+      init = { wdL = top. }
+   }
+
+   widget tool3_wdg ={
+      display = {tool3_img }
       init = { wdL = top. }
    }
 
@@ -73,6 +86,16 @@ proc Init = draw_scene(workshopScene);
             Init_actuator;
             Init_event.
 
+    Init_tool = tell(tool1);
+                place_at(tool1_wdg,workshopScene,126,210);
+                show(tool1_wdg,workshopScene);
+                tell(tool2);
+                place_at(tool2_wdg,workshopScene,176,210);
+                show(tool2_wdg,workshopScene);
+                tell(tool3);
+                place_at(tool3_wdg,workshopScene,84,210);
+                show(tool3_wdg,workshopScene).
+
     Init_sensors= place_at(temp_sensor_wdg,workshopScene,700,0);
                  show(temp_sensor_wdg,workshopScene);
                  place_at(weighting_scale, workshopScene, 650,500);
@@ -81,20 +104,28 @@ proc Init = draw_scene(workshopScene);
 
     Init_actuator= place_at(buzzer_wdg,workshopScene,900, 0);
                    show(buzzer_wdg,workshopScene).
-
-    Init_tool = tell(tool);
-                place_at(tool_wdg,workshopScene,126,210);
-                show(tool_wdg,workshopScene).
+                   
                
     Init_event = place_at(flame_wdg,workshopScene,600,200).
 	
-    Take_tool= ask(tool);
-               get(tool);
-               hide(tool_wdg,workshopScene).
+     Take_specific_tool(id: Tools) = get(id);
+                                    (((id = tool1) -> hide(tool1_wdg, workshopScene))
+                                    +
+                                    ((id = tool2) -> hide(tool2_wdg, workshopScene))
+                                    +
+                                    ((id = tool3) -> hide(tool3_wdg, workshopScene))).
 
-    Return_tool= nask(tool);
-                 tell(tool);
-                 show(tool_wdg,workshopScene).
+    Return_specific_tool(id: Tools) = nask(id);
+                                      tell(id);
+                                      (((id = tool1) -> show(tool1_wdg, workshopScene))
+                                      +
+                                      ((id = tool2) -> show(tool2_wdg, workshopScene))
+                                      +
+                                      ((id = tool3) -> show(tool3_wdg, workshopScene))).
+
+    Take_tool = (ask(tool1); Take_specific_tool(tool1); Take_tool + ask(tool2); Take_specific_tool(tool2); Take_tool + ask(tool3); Take_specific_tool(tool3); Take_tool + Take_tool).
+
+    Return_tool = (nask(tool1); Return_specific_tool(tool1); Return_tool + nask(tool2); Return_specific_tool(tool2); Return_tool + nask(tool3); Return_specific_tool(tool3); Return_tool + Return_tool).
 
     Launch_fire= nask(fire);
                  tell(fire);

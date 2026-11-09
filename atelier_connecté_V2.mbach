@@ -1,0 +1,262 @@
+eset States = {on, off}.
+    Bolts= {bolt1,bolt2,bolt3}.
+    Tools = {tool1, tool2, tool3}.
+
+
+scene workshopScene = {
+
+   size = (1671,941).
+   
+   layers = { top }.
+
+   background = loadImage(Images/workshop.png).
+   tool1_img= loadImage(Images/tool1.png).
+   tool2_img = loadImage(Images/tool2.png).
+   tool3_img = loadImage(Images/tool3.png).
+   temp_sensor_img = loadImage(Images/tempSensor.png).
+   buzzer_on_img = loadImage(Images/buzzerOn.png).
+   buzzer_off_img = loadImage(Images/buzzerOff.png).
+   flame_img= loadImage(Images/flame.png).
+   weighting_scale_img = loadImage(Images/weighting_scale.png).
+   bolt_img = loadImage(Images/bolt.png).
+   rasberry_img= loadImage(Images/rasberry.png).
+   packet_img= loadImage(Images/packet.png).
+
+   widget tool1_wdg ={
+      display = {tool1_img }
+      init = { wdL = top. }
+   }
+
+   widget tool2_wdg ={
+      display = {tool2_img }
+      init = { wdL = top. }
+   }
+
+   widget tool3_wdg ={
+      display = {tool3_img }
+      init = { wdL = top. }
+   }
+
+   widget buzzer_wdg ={
+      
+      attributes = {buzzer_state in States.}
+    
+      display = {
+         buzzer_state = on -> buzzer_on_img.
+         buzzer_state = off -> buzzer_off_img.
+      }
+
+      init = {
+         wdL = top.
+         buzzer_state = off.
+      }
+   }
+
+   widget temp_sensor_wdg ={
+      display = {temp_sensor_img}
+      init = {wdL = top.}
+   }
+   
+   widget flame_wdg ={
+      display ={flame_img}
+      init = {wdL=top.}
+   }
+
+   widget weighting_scale = {
+      display = {weighting_scale_img}
+      init = {wdL = top.}
+   }
+   
+   widget bolt_wdg1 = {
+      display = {bolt_img}
+      init = {wdL = top.}
+   }
+   
+   widget bolt_wdg2 = {
+      display = {bolt_img}
+      init = {wdL = top.}
+   }
+   
+   widget bolt_wdg3 = {
+      display = {bolt_img}
+      init = {wdL = top.}
+   }
+
+   widget rasberry_wdg ={
+      display={rasberry_img}
+      init = {wdL=top.}
+   }
+}.
+
+scene workshopScene1 = {
+
+   size = (1671,941).
+   
+   layers = { top }.
+
+   background = loadImage(Images/workshop.png).
+   tool1_img= loadImage(Images/tool1.png).
+   tool2_img = loadImage(Images/tool2.png).
+   tool3_img = loadImage(Images/tool3.png).
+   temp_sensor_img = loadImage(Images/tempSensor.png).
+   buzzer_on_img = loadImage(Images/buzzerOn.png).
+   buzzer_off_img = loadImage(Images/buzzerOff.png).
+   flame_img= loadImage(Images/flame.png).
+   weighting_scale_img = loadImage(Images/weighting_scale.png).
+   bolt_img = loadImage(Images/bolt.png).
+   rasberry_img= loadImage(Images/rasberry.png).
+   packet_img= loadImage(Images/packet.png).
+
+   widget tool1_wdg ={
+      display = {tool1_img }
+      init = { wdL = top. }
+   }
+
+   widget tool2_wdg ={
+      display = {tool2_img }
+      init = { wdL = top. }
+   }
+
+   widget tool3_wdg ={
+      display = {tool3_img }
+      init = { wdL = top. }
+   }
+
+   widget buzzer_wdg ={
+      
+      attributes = {buzzer_state in States.}
+    
+      display = {
+         buzzer_state = on -> buzzer_on_img.
+         buzzer_state = off -> buzzer_off_img.
+      }
+
+      init = {
+         wdL = top.
+         buzzer_state = off.
+      }
+   }
+
+   widget temp_sensor_wdg ={
+      display = {temp_sensor_img}
+      init = {wdL = top.}
+   }
+   
+   widget flame_wdg ={
+      display ={flame_img}
+      init = {wdL=top.}
+   }
+
+   widget weighting_scale = {
+      display = {weighting_scale_img}
+      init = {wdL = top.}
+   }
+   
+   widget bolt_wdg1 = {
+      display = {bolt_img}
+      init = {wdL = top.}
+   }
+   
+   widget bolt_wdg2 = {
+      display = {bolt_img}
+      init = {wdL = top.}
+   }
+   
+   widget bolt_wdg3 = {
+      display = {bolt_img}
+      init = {wdL = top.}
+   }
+
+   widget rasberry_wdg ={
+      display={rasberry_img}
+      init = {wdL=top.}
+   }
+}.
+
+proc Init = draw_scene(workshopScene);
+            Init_tool;
+            Init_sensors;
+            Init_actuator;
+            Init_network;
+            Init_event.
+
+    Init_tool = tell(tool1);
+                place_at(tool1_wdg,workshopScene,126,210);
+                show(tool1_wdg,workshopScene);
+                tell(tool2);
+                place_at(tool2_wdg,workshopScene,176,210);
+                show(tool2_wdg,workshopScene);
+                tell(tool3);
+                place_at(tool3_wdg,workshopScene,84,210);
+                show(tool3_wdg,workshopScene).
+
+    Init_sensors= place_at(temp_sensor_wdg,workshopScene,700,0);
+                 show(temp_sensor_wdg,workshopScene);
+                 place_at(weighting_scale, workshopScene, 650,500);
+                 show(weighting_scale, workshopScene).
+
+
+    Init_actuator= place_at(buzzer_wdg,workshopScene,900, 0);
+                   show(buzzer_wdg,workshopScene).
+    
+    Init_network = place_at(rasberry_wdg,workshopScene,900,100);
+                   show(rasberry_wdg,workshopScene).
+                        
+    Init_event = place_at(flame_wdg,workshopScene,600,200).
+	
+     Take_specific_tool(id: Tools) = get(id);
+                                    (((id = tool1) -> hide(tool1_wdg, workshopScene))
+                                    +
+                                    ((id = tool2) -> hide(tool2_wdg, workshopScene))
+                                    +
+                                    ((id = tool3) -> hide(tool3_wdg, workshopScene))).
+
+    Return_specific_tool(id: Tools) = nask(id);
+                                      tell(id);
+                                      (((id = tool1) -> show(tool1_wdg, workshopScene))
+                                      +
+                                      ((id = tool2) -> show(tool2_wdg, workshopScene))
+                                      +
+                                      ((id = tool3) -> show(tool3_wdg, workshopScene))).
+
+    Take_tool = (ask(tool1); Take_specific_tool(tool1); Take_tool + ask(tool2); Take_specific_tool(tool2); Take_tool + ask(tool3); Take_specific_tool(tool3); Take_tool + Take_tool).
+
+    Return_tool = (nask(tool1); Return_specific_tool(tool1); Return_tool + nask(tool2); Return_specific_tool(tool2); Return_tool + nask(tool3); Return_specific_tool(tool3); Return_tool + Return_tool).
+
+    Launch_fire= nask(fire);
+                 tell(fire);
+                 show(flame_wdg,workshopScene).
+
+     Stop_fire=  ask(fire);
+                 get(fire);
+                 hide(flame_wdg,workshopScene).
+
+     Check_temperature= ((ask(fire);att(buzzer_state,buzzer_wdg,workshopScene,on))
+                        +
+                        (nask(fire);att(buzzer_state,buzzer_wdg,workshopScene,off)));
+                        Check_temperature.
+      
+
+     Take_specific_bolt(id: Bolts) = get(id);
+                                    (((id = bolt1) -> hide(bolt_wdg1, workshopScene))
+                                    +
+                                    ((id = bolt2) -> hide(bolt_wdg2, workshopScene))
+                                    +
+                                    ((id = bolt3) -> hide(bolt_wdg2, workshopScene))).
+
+      Add_specific_bolt(id: Bolts) = tell(id);
+                                     (((id = bolt1) -> place_at(bolt_wdg1, workshopScene, 615,230); show(bolt_wdg1, workshopScene))
+                                    +
+                                     ((id = bolt2) -> place_at(bolt_wdg2, workshopScene, 635,250); show(bolt_wdg2, workshopScene))
+                                    +
+                                     ((id = bolt3) -> place_at(bolt_wdg3, workshopScene, 655,270); show(bolt_wdg3, workshopScene))).
+
+      Take_bolt = (ask(bolt1); Take_specific_bolt(bolt1); Take_bolt + ask(bolt2); Take_specific_bolt(bolt2); Take_bolt + ask(bolt3); Take_specific_bolt(bolt3); Take_bolt + Take_bolt).
+      
+      Add_bolt = (nask(bolt1); Add_specific_bolt(bolt1); Add_bolt + nask(bolt2); Add_specific_bolt(bolt2); Add_bolt + nask(bolt3); Add_specific_bolt(bolt3); Add_bolt + Add_bolt).
+
+                                       
+
+
+
+    

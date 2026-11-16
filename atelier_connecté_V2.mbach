@@ -23,6 +23,7 @@ scene workshopScene = {
    rasberry_red_img = loadImage(Images/rasberry_red.png).
    packet_img= loadImage(Images/packet.png).
    packet_accepted_img= loadImage(Images/packet_accepted.png).
+   ping_packet_img = loadImage(Images/ping_packet.png).
 
    widget tool1_wdg = {
       display = {tool1_img}
@@ -105,7 +106,7 @@ scene workshopScene = {
    }
    
    widget packet_wdg = {
-      display = {packet_img}
+      display = {ping_packet_img}
       init = {wdL = top.}
    }
 

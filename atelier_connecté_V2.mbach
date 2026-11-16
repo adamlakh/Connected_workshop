@@ -22,6 +22,7 @@ scene workshopScene = {
    rasberry_img= loadImage(Images/rasberry.png).
    rasberry_red_img = loadImage(Images/rasberry_red.png).
    packet_img= loadImage(Images/packet.png).
+   packet_accepted_img= loadImage(Images/packet_accepted.png).
 
    widget tool1_wdg = {
       display = {tool1_img}
@@ -107,6 +108,17 @@ scene workshopScene = {
       display = {packet_img}
       init = {wdL = top.}
    }
+
+   widget packet_wdg1= {
+
+      display={packet_img}
+      init = {wdL=top.}
+   }
+
+   widget packet_accepted_wdg1={
+      display={packet_accepted_img}
+      init={wdL=top.}
+   }
 }.
 
 proc Init = draw_scene(workshopScene);
@@ -141,7 +153,10 @@ proc Init = draw_scene(workshopScene);
                     show(buzzer_wdg,workshopScene).
     
     Init_network = place_at(rasberry_wdg,workshopScene,900,100);
-                   show(rasberry_wdg,workshopScene).
+                   show(rasberry_wdg,workshopScene);
+                   place_at(packet_accepted_wdg1,workshopScene,1350,500);
+                   place_at(packet_wdg1,workshopScene,1100,700).
+         
                         
     Init_event = place_at(flame_wdg,workshopScene,600,200).
 
@@ -204,10 +219,15 @@ proc Init = draw_scene(workshopScene);
                                      +
                                      ((id = bolt3) -> place_at(bolt_wdg3, workshopScene, 655,270); show(bolt_wdg3, workshopScene))).
 
-      Take_bolt = (ask(bolt1); Take_specific_bolt(bolt1); Take_bolt + ask(bolt2); Take_specific_bolt(bolt2); Take_bolt + ask(bolt3); Take_specific_bolt(bolt3); Take_bolt + Take_bolt).
+      Take_bolt = (ask(bolt1); Take_specific_bolt(bolt1); Send_data; Take_bolt + ask(bolt2); Take_specific_bolt(bolt2); Send_data; Take_bolt + ask(bolt3); Take_specific_bolt(bolt3);Send_data; Take_bolt + Take_bolt).
       
-      Add_bolt = (nask(bolt1); Add_specific_bolt(bolt1); Add_bolt + nask(bolt2); Add_specific_bolt(bolt2); Add_bolt + nask(bolt3); Add_specific_bolt(bolt3); Add_bolt + Add_bolt).
+      Add_bolt = (nask(bolt1); Add_specific_bolt(bolt1); Send_data; Add_bolt + nask(bolt2); Add_specific_bolt(bolt2);Send_data; Add_bolt + nask(bolt3); Add_specific_bolt(bolt3); Send_data; Add_bolt + Add_bolt).
+     
+      Send_data = show(packet_wdg1,workshopScene);hide(packet_wdg1,workshopScene);tell(weightData).
 
+      Receive_data= (ask(weightData);get(weightData);show(packet_accepted_wdg1,workshopScene);hide(packet_accepted_wdg1,workshopScene);Receive_data)
+                     + 
+                    (nask(weightData);Receive_data).
 
       Clear_attempts = (ask(attempt); get(attempt); Clear_attempts)
                        +
@@ -247,7 +267,6 @@ proc Init = draw_scene(workshopScene);
                      (nask(sensor_on);
                       tell(timeout)));
                   Sensor_ack.
-
 
       Kill_sensor = get(sensor_on).
       Revive_sensor = tell(sensor_on).

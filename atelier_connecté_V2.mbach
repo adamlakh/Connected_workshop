@@ -12,6 +12,7 @@ scene workshopScene = {
    tool1_img= loadImage(Images/tool1.png).
    tool2_img = loadImage(Images/tool2.png).
    tool3_img = loadImage(Images/tool3.png).
+   worker_img = loadImage(Images/worker.png).
    temp_sensor_img = loadImage(Images/tempSensor.png).
    buzzer_on_img = loadImage(Images/buzzerOn.png).
    buzzer_off_img = loadImage(Images/buzzerOff.png).
@@ -34,6 +35,11 @@ scene workshopScene = {
 
    widget tool3_wdg = {
       display = {tool3_img}
+      init = {wdL = top.}
+   }
+
+   widget worker_wdg = {
+      display = {worker_img}
       init = {wdL = top.}
    }
 
@@ -105,6 +111,7 @@ scene workshopScene = {
 
 proc Init = draw_scene(workshopScene);
             Init_tool;
+            Init_worker;
             Init_sensors;
             Init_actuator;
             Init_network;
@@ -120,12 +127,15 @@ proc Init = draw_scene(workshopScene);
                 tell(tool3);
                 place_at(tool3_wdg,workshopScene,84,210);
                 show(tool3_wdg,workshopScene).
+   
+    Init_worker = tell(worker);
+                  place_at(worker_wdg,workshopScene,200,300);
+                  show(worker_wdg,workshopScene).
 
     Init_sensors = place_at(temp_sensor_wdg,workshopScene,700,0);
                    show(temp_sensor_wdg,workshopScene);
                    place_at(weighting_scale, workshopScene, 650,500);
                    show(weighting_scale, workshopScene).
-
 
     Init_actuator = place_at(buzzer_wdg,workshopScene,900, 0);
                     show(buzzer_wdg,workshopScene).
@@ -136,21 +146,31 @@ proc Init = draw_scene(workshopScene);
     Init_event = place_at(flame_wdg,workshopScene,600,200).
 
     Init_ping = tell(attempt); tell(attempt); tell(attempt); tell(sensor_on).
-	
-    Take_specific_tool(id: Tools) = get(id);
-                                    (((id = tool1) -> hide(tool1_wdg, workshopScene))
-                                    +
-                                    ((id = tool2) -> hide(tool2_wdg, workshopScene))
-                                    +
-                                    ((id = tool3) -> hide(tool3_wdg, workshopScene))).
 
-    Return_specific_tool(id: Tools) = nask(id);
-                                      tell(id);
-                                      (((id = tool1) -> show(tool1_wdg, workshopScene))
-                                      +
-                                      ((id = tool2) -> show(tool2_wdg, workshopScene))
-                                      +
-                                      ((id = tool3) -> show(tool3_wdg, workshopScene))).
+    Take_specific_tool(id: Tools) = get(worker);
+                                       ((get(id);
+                                       (((id = tool1) -> move_to(worker_wdg,workshopScene,126,260); hide(tool1_wdg, workshopScene))
+                                       +
+                                       ((id = tool2) -> move_to(worker_wdg,workshopScene,176,260); hide(tool2_wdg, workshopScene))
+                                       +
+                                       ((id = tool3) -> move_to(worker_wdg,workshopScene,84,260); hide(tool3_wdg, workshopScene)));
+                                       place_at(worker_wdg,workshopScene,200,300);
+                                       tell(worker))
+                                       +
+                                       (nask(id); tell(worker))).
+
+    Return_specific_tool(id: Tools) = get(worker);
+                                       ((nask(id);
+                                       (((id = tool1) -> move_to(worker_wdg,workshopScene,126,260); show(tool1_wdg, workshopScene))
+                                       +
+                                       ((id = tool2) -> move_to(worker_wdg,workshopScene,176,260); show(tool2_wdg, workshopScene))
+                                       +
+                                       ((id = tool3) -> move_to(worker_wdg,workshopScene,84,260); show(tool3_wdg, workshopScene)));
+                                       place_at(worker_wdg,workshopScene,200,300);
+                                       tell(id);
+                                       tell(worker))
+                                       +
+                                       (ask(id); tell(worker))).
 
     Take_tool = (ask(tool1); Take_specific_tool(tool1); Take_tool + ask(tool2); Take_specific_tool(tool2); Take_tool + ask(tool3); Take_specific_tool(tool3); Take_tool + Take_tool).
 

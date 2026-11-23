@@ -241,35 +241,42 @@ proc Init = draw_scene(workshopScene);
                    +
                    (ask(timeout); get(timeout); Raspberry_ping).
 
-      Raspberry_ping = (
-                        ask(attempt);
-                        get(attempt);
-                        place_at(packet_wdg, workshopScene, 1150, 320);
-                        show(packet_wdg, workshopScene);
-                        move_to(packet_wdg, workshopScene, 900, 100);
-                        hide(packet_wdg, workshopScene);
-                        tell(ping);
-                        Wait_reply)
+      Communication_channel=
+               ((ask(sensor_on);
+                  ask(ping);
+                  get(ping);
+                  tell(ping_delivred))
+               +
+               (nask(sensor_on);
+                  ask(ping);
+                  get(ping);
+                  tell(timeout)));
+               Communication_channel.
+
+      Raspberry_ping =  ((ask(attempt);
+                           get(attempt);
+                           place_at(packet_wdg, workshopScene, 1150, 320);
+                           show(packet_wdg, workshopScene);
+                           move_to(packet_wdg, workshopScene, 300, 0);
+                           hide(packet_wdg, workshopScene);
+                           tell(ping);
+                           Wait_reply)
                         +
                         (nask(attempt);
-                        att(sensor_state, rasberry_wdg, workshopScene, off);
-                        Reset_attempts;
-                        Raspberry_ping).
+                           att(sensor_state, rasberry_wdg, workshopScene, off);
+                           Reset_attempts;
+                           Raspberry_ping)).
 
-      Sensor_ack = ask(ping); 
-                   get(ping);
-                   ((ask(sensor_on);
-                     place_at(packet_wdg,workshopScene, 700, 0);
+      Sensor_ack =  (ask(ping_delivred);
+                     get();
+                     place_at(packet_wdg, workshopScene, 700, 0);
                      show(packet_wdg, workshopScene);
-                     move_to(packet_wdg, workshopScene, 900, 100);
+                     move_to(packet_wdg, workshopScene, 1150, 320);
                      hide(packet_wdg, workshopScene);
-                     tell(ack)) 
-                     + 
-                     (nask(sensor_on);
-                      tell(timeout)));
-                  Sensor_ack.
+                     tell(ack));
+                     Sensor_ack.
 
       Kill_sensor = get(sensor_on).
       Revive_sensor = tell(sensor_on).
       
-      Start_ping = Raspberry_ping || Sensor_ack.
+      Start_ping = Raspberry_ping || Sensor_ack ||Communication_channel.

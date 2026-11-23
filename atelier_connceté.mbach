@@ -121,34 +121,27 @@ proc Init = draw_scene(workshopScene);
     Init_event = place_at(flame_wdg,workshopScene,600,200).
     
    
-    Take_specific_tool(id: Tools) = get(worker);
-                                       ((get(id);
-                                       (((id = tool1) -> move_to(worker_wdg,workshopScene,126,260); hide(tool1_wdg, workshopScene))
-                                       +
-                                       ((id = tool2) -> move_to(worker_wdg,workshopScene,176,260); hide(tool2_wdg, workshopScene))
-                                       +
-                                       ((id = tool3) -> move_to(worker_wdg,workshopScene,84,260); hide(tool3_wdg, workshopScene)));
-                                       place_at(worker_wdg,workshopScene,200,300);
-                                       tell(worker))
-                                       +
-                                       (nask(id); tell(worker))).
+    Take_specific_tool(id: Tools) = get(id);
+                                    (((id = tool1) -> move_to(worker_wdg,workshopScene,126,260); hide(tool1_wdg, workshopScene))
+                                    +
+                                    ((id = tool2) -> move_to(worker_wdg,workshopScene,176,260); hide(tool2_wdg, workshopScene))
+                                    +
+                                    ((id = tool3) -> move_to(worker_wdg,workshopScene,84,260); hide(tool3_wdg, workshopScene)));
+                                    place_at(worker_wdg,workshopScene,200,300);
+                                    tell(worker).
 
-    Return_specific_tool(id: Tools) = get(worker);
-                                       ((nask(id);
-                                       (((id = tool1) -> move_to(worker_wdg,workshopScene,126,260); show(tool1_wdg, workshopScene))
+    Return_specific_tool(id: Tools) = (((id = tool1) -> move_to(worker_wdg,workshopScene,126,260); show(tool1_wdg, workshopScene))
                                        +
                                        ((id = tool2) -> move_to(worker_wdg,workshopScene,176,260); show(tool2_wdg, workshopScene))
                                        +
                                        ((id = tool3) -> move_to(worker_wdg,workshopScene,84,260); show(tool3_wdg, workshopScene)));
                                        place_at(worker_wdg,workshopScene,200,300);
                                        tell(id);
-                                       tell(worker))
-                                       +
-                                       (ask(id); tell(worker))).
+                                       tell(worker).
 
-    Take_tool = (ask(tool1); Take_specific_tool(tool1); Take_tool + ask(tool2); Take_specific_tool(tool2); Take_tool + ask(tool3); Take_specific_tool(tool3); Take_tool + Take_tool).
+    Take_tool = (get(worker); (ask(tool1); Take_specific_tool(tool1); Take_tool + ask(tool2); Take_specific_tool(tool2); Take_tool + ask(tool3); Take_specific_tool(tool3); Take_tool + tell(worker); Take_tool) + Take_tool).
 
-    Return_tool = (nask(tool1); Return_specific_tool(tool1); Return_tool + nask(tool2); Return_specific_tool(tool2); Return_tool + nask(tool3); Return_specific_tool(tool3); Return_tool + Return_tool).
+    Return_tool = (get(worker); (nask(tool1); Return_specific_tool(tool1); Return_tool + nask(tool2); Return_specific_tool(tool2); Return_tool + nask(tool3); Return_specific_tool(tool3); Return_tool + tell(worker); Return_tool) + Return_tool).
 
     Launch_fire= nask(fire);
                  tell(fire);

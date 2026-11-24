@@ -185,12 +185,10 @@ proc Init = draw_scene(workshopScene);
 
     Return_tool = (get(worker); (nask(tool1); Return_specific_tool(tool1); Return_tool + nask(tool2); Return_specific_tool(tool2); Return_tool + nask(tool3); Return_specific_tool(tool3); Return_tool + tell(worker); Return_tool) + Return_tool).
     
-    Launch_fire = nask(fire);
-                  tell(fire);
+    Launch_fire = tell(fire);
                   show(flame_wdg,workshopScene).
 
-     Stop_fire = ask(fire);
-                 get(fire);
+     Stop_fire = get(fire);
                  hide(flame_wdg,workshopScene).
 
      Check_temperature = ((ask(fire); att(buzzer_state,buzzer_wdg,workshopScene,on))
@@ -219,49 +217,45 @@ proc Init = draw_scene(workshopScene);
      
       Send_data = show(packet_wdg1,workshopScene);hide(packet_wdg1,workshopScene);tell(weightData).
 
-      Receive_data= (ask(weightData);get(weightData);show(packet_accepted_wdg1,workshopScene);hide(packet_accepted_wdg1,workshopScene);Receive_data)
+      Receive_data= (get(weightData);show(packet_accepted_wdg1,workshopScene);hide(packet_accepted_wdg1,workshopScene);Receive_data)
                      + 
                     (nask(weightData);Receive_data).
 
-      Clear_attempts = (ask(attempt); get(attempt); Clear_attempts)
+      Clear_attempts = (get(attempt); Clear_attempts)
                        +
                        nask(attempt).
 
       Reset_attempts = Clear_attempts;
-                       tell(attempt); tell(attempt); tell(attempt).
+                       [tell(attempt) -> tell(attempt), tell(attempt)].
 
-      Wait_reply = (ask(ack); get(ack); att(sensor_state, rasberry_wdg, workshopScene, on); Reset_attempts; Raspberry_ping)
+      Wait_reply = (get(ack); att(sensor_state, rasberry_wdg, workshopScene, on); Reset_attempts; Raspberry_ping)
                    +
-                   (ask(timeout); get(timeout); Raspberry_ping).
+                   (get(timeout); Raspberry_ping).
 
-      Communication_channel=
+      Communication_channel =
                ((ask(sensor_on);
-                  ask(ping);
                   get(ping);
                   tell(ping_delivred))
                +
                (nask(sensor_on);
-                  ask(ping);
                   get(ping);
                   tell(timeout)));
                Communication_channel.
 
-      Raspberry_ping =  ((ask(attempt);
-                           get(attempt);
-                           place_at(packet_wdg, workshopScene, 1150, 320);
-                           show(packet_wdg, workshopScene);
-                           move_to(packet_wdg, workshopScene, 300, 0);
-                           hide(packet_wdg, workshopScene);
-                           tell(ping);
-                           Wait_reply)
+      Raspberry_ping = ((get(attempt);
+                        place_at(packet_wdg, workshopScene, 1150, 320);
+                        show(packet_wdg, workshopScene);
+                        move_to(packet_wdg, workshopScene, 300, 0);
+                        hide(packet_wdg, workshopScene);
+                        tell(ping);
+                        Wait_reply)
                         +
                         (nask(attempt);
-                           att(sensor_state, rasberry_wdg, workshopScene, off);
-                           Reset_attempts;
-                           Raspberry_ping)).
+                        att(sensor_state, rasberry_wdg, workshopScene, off);
+                        Reset_attempts;
+                        Raspberry_ping)).
 
-      Sensor_ack =  (ask(ping_delivred);
-                     get();
+      Sensor_ack =  (get(ping_delivred);
                      place_at(packet_wdg, workshopScene, 700, 0);
                      show(packet_wdg, workshopScene);
                      move_to(packet_wdg, workshopScene, 1150, 320);
